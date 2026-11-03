@@ -1,0 +1,70 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Famly",
+        "description": "Sign in with your Famly account. The password is not stored, only an access token.",
+        "data": {
+          "email": "Email",
+          "password": "Password"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Sign in again",
+        "description": "Famly rejected the stored token. Sign in again.",
+        "data": {
+          "password": "Password"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Wrong email or password.",
+      "cannot_connect": "Could not reach Famly.",
+      "challenge_unsupported": "Famly requires an extra sign-in step (for example two-factor authentication), which is not supported yet."
+    },
+    "abort": {
+      "already_configured": "This account is already set up.",
+      "reauth_successful": "Sign-in renewed."
+    }
+  },
+  "entity": {
+    "image": {
+      "profile_image": {
+        "name": "Profile picture"
+      }
+    },
+    "sensor": {
+      "birthday": {
+        "name": "Birthday"
+      },
+      "check_in": {
+        "name": "Check-in"
+      },
+      "check_out": {
+        "name": "Check-out"
+      },
+      "pickup": {
+        "name": "Picked up by"
+      },
+      "status": {
+        "name": "Status",
+        "state": {
+          "not_arrived": "Not arrived",
+          "checked_in": "Checked in",
+          "checked_out": "Checked out",
+          "on_leave": "On leave"
+        }
+      }
+    },
+    "calendar": {
+      "calendar": {
+        "name": "Calendar"
+      }
+    },
+    "device_tracker": {
+      "location": {
+        "name": "Location"
+      }
+    }
+  }
+}
