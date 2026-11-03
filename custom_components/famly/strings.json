@@ -11,7 +11,14 @@
       },
       "reauth_confirm": {
         "title": "Sign in again",
-        "description": "Famly rejected the stored token. Sign in again.",
+        "description": "Famly rejected the stored token. Sign in again as {email}.",
+        "data": {
+          "password": "Password"
+        }
+      },
+      "reconfigure": {
+        "title": "Famly",
+        "description": "Sign in again to {email}",
         "data": {
           "password": "Password"
         }
@@ -24,7 +31,8 @@
     },
     "abort": {
       "already_configured": "This account is already set up.",
-      "reauth_successful": "Sign-in renewed."
+      "reauth_successful": "Sign-in renewed.",
+      "reconfigure_successful": "Reconfiguration complete."
     }
   },
   "entity": {
