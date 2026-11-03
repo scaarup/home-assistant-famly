@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import Any
 
 import voluptuous as vol
-from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
+from homeassistant.config_entries import ConfigEntry, ConfigFlow, ConfigFlowResult
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .api import FamlyApi, FamlyApiError, FamlyAuthError, FamlyChallengeError
@@ -54,16 +54,29 @@ class FamlyConfigFlow(ConfigFlow, domain=DOMAIN):
     async def async_step_reauth(self, entry_data: dict[str, Any]) -> ConfigFlowResult:
         return await self.async_step_reauth_confirm()
 
-    async def async_step_reauth_confirm(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
+    async def async_step_reauth_confirm(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        return await self._async_sign_in_again("reauth_confirm", self._get_reauth_entry(), user_input)
+
+    async def async_step_reconfigure(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        return await self._async_sign_in_again("reconfigure", self._get_reconfigure_entry(), user_input)
+
+    async def _async_sign_in_again(
+        self, step_id: str, entry: ConfigEntry, user_input: dict[str, Any] | None
+    ) -> ConfigFlowResult:
         errors: dict[str, str] = {}
-        entry = self._get_reauth_entry()
         if user_input is not None:
             api = FamlyApi(
                 async_get_clientsession(self.hass),
-                installation_id=entry.data[CONF_INSTALLATION_ID], device_id=entry.data[CONF_DEVICE_ID],
+                installation_id=entry.data[CONF_INSTALLATION_ID],
+                device_id=entry.data[CONF_DEVICE_ID],
             )
             try:
                 token = await api.async_authenticate(entry.data[CONF_EMAIL], user_input["password"])
+                await api.async_get_context()
             except FamlyChallengeError:
                 errors["base"] = "challenge_unsupported"
             except FamlyAuthError:
@@ -75,5 +88,8 @@ class FamlyConfigFlow(ConfigFlow, domain=DOMAIN):
                     entry, data_updates={CONF_ACCESS_TOKEN: token, CONF_DEVICE_ID: api.device_id}
                 )
         return self.async_show_form(
-            step_id="reauth_confirm", data_schema=vol.Schema({vol.Required("password"): str}), errors=errors
+            step_id=step_id,
+            data_schema=vol.Schema({vol.Required("password"): str}),
+            description_placeholders={"email": entry.data[CONF_EMAIL]},
+            errors=errors,
         )

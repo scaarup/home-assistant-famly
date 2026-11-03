@@ -51,6 +51,22 @@ class FamlyChallengeError(FamlyAuthError):
         self.challenge = challenge
 
 
+AUTH_ERROR_HINTS = ("authenticat", "authoriz", "unauthor", "expired", "not logged in", "access token")
+AUTH_ERROR_CODES = {"UNAUTHENTICATED", "UNAUTHORIZED", "FORBIDDEN", "TOKEN_EXPIRED"}
+
+
+def is_auth_error(errors: Any) -> bool:
+    """Ser GraphQL-fejllisten ud som et afvist/udløbet login?"""
+    for err in errors or []:
+        if not isinstance(err, dict):
+            continue
+        code = str((err.get("extensions") or {}).get("code", "")).upper()
+        text = " ".join(str(err.get(k, "")) for k in ("message", "debug")).lower()
+        if code in AUTH_ERROR_CODES or any(hint in text for hint in AUTH_ERROR_HINTS):
+            return True
+    return False
+
+
 class FamlyApiError(Exception):
     """Netværk eller uventet svar."""
 
@@ -92,10 +108,14 @@ class FamlyApi:
         except aiohttp.ClientError as err:
             raise FamlyApiError(str(err)) from err
         if body.get("errors"):
-            msg = str(body["errors"])[:200]
-            if "uthenticat" in msg or "uthoriz" in msg:
-                raise FamlyAuthError(msg)
-            raise FamlyApiError(msg)
+            if is_auth_error(body["errors"]):
+                raise FamlyAuthError(str(body["errors"])[:200])
+            raise FamlyApiError(str(body["errors"])[:200])
+        if body.get("data") is None:
+            # Uden data og uden fejl: med token betyder det næsten altid et afvist token.
+            if self.access_token and op != "Authenticate":
+                raise FamlyAuthError("empty response")
+            raise FamlyApiError("empty response")
         return body["data"]
 
     async def async_authenticate(self, email: str, password: str) -> str:
@@ -117,6 +137,8 @@ class FamlyApi:
 
     async def async_get_context(self) -> dict[str, Any]:
         data = await self._post("GetCurrentContext", CONTEXT_QUERY, {}, "/account")
+        if not data.get("me"):
+            raise FamlyAuthError("no user in response")
         return data["me"]
 
     @staticmethod

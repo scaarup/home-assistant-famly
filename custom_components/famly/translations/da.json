@@ -11,7 +11,14 @@
       },
       "reauth_confirm": {
         "title": "Log ind igen",
-        "description": "Famly afviste tokenet. Log ind igen.",
+        "description": "Famly afviste tokenet. Log ind igen som {email}.",
+        "data": {
+          "password": "Adgangskode"
+        }
+      },
+      "reconfigure": {
+        "title": "Famly",
+        "description": "Log ind igen som {email}",
         "data": {
           "password": "Adgangskode"
         }
@@ -24,7 +31,8 @@
     },
     "abort": {
       "already_configured": "Kontoen er allerede sat op.",
-      "reauth_successful": "Login fornyet."
+      "reauth_successful": "Login fornyet.",
+      "reconfigure_successful": "Genopsætning færdig."
     }
   },
   "entity": {
