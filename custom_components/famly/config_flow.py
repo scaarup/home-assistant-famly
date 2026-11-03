@@ -1,4 +1,4 @@
-"""Config flow: login med Famly-konto (e-mail + adgangskode). Kun access-token gemmes, aldrig adgangskoden."""
+"""Config flow: sign in with a Famly account (email + password). Only the access token is stored, never the password."""
 from __future__ import annotations
 
 from typing import Any

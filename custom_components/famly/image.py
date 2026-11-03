@@ -1,4 +1,4 @@
-"""Profilbillede pr. barn."""
+"""Profile picture per child."""
 from __future__ import annotations
 
 from homeassistant.components.image import ImageEntity

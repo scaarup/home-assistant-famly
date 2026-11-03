@@ -1,4 +1,4 @@
-"""Klient til Famlys interne GraphQL-API (samme kald som webappen). Ingen HA-importer."""
+"""Client for Famly's internal GraphQL API (the same calls as the web app). No HA imports."""
 from __future__ import annotations
 
 import re
@@ -40,11 +40,11 @@ fragment C on UserContext { id target { __typename
 
 
 class FamlyAuthError(Exception):
-    """Forkert login eller afvist/udløbet token."""
+    """Wrong login, or the token was rejected or has expired."""
 
 
 class FamlyChallengeError(FamlyAuthError):
-    """Famly kræver et ekstra trin (2FA / valg af kontekst). Ikke understøttet endnu."""
+    """Famly requires an extra step (2FA / choosing a context). Not supported yet."""
 
     def __init__(self, challenge: dict[str, Any]) -> None:
         super().__init__("challenged")
@@ -56,7 +56,7 @@ AUTH_ERROR_CODES = {"UNAUTHENTICATED", "UNAUTHORIZED", "FORBIDDEN", "TOKEN_EXPIR
 
 
 def is_auth_error(errors: Any) -> bool:
-    """Ser GraphQL-fejllisten ud som et afvist/udløbet login?"""
+    """Does the GraphQL error list look like a rejected or expired login?"""
     for err in errors or []:
         if not isinstance(err, dict):
             continue
@@ -68,7 +68,7 @@ def is_auth_error(errors: Any) -> bool:
 
 
 class FamlyApiError(Exception):
-    """Netværk eller uventet svar."""
+    """Network problem or unexpected response."""
 
 
 @dataclass
@@ -101,7 +101,7 @@ class FamlyApi:
                 timeout=aiohttp.ClientTimeout(total=30),
             ) as resp:
                 if resp.status in (401, 403):
-                    raise FamlyAuthError("token afvist")
+                    raise FamlyAuthError("token rejected")
                 if resp.status != 200:
                     raise FamlyApiError(f"HTTP {resp.status}")
                 body = await resp.json()
@@ -112,14 +112,14 @@ class FamlyApi:
                 raise FamlyAuthError(str(body["errors"])[:200])
             raise FamlyApiError(str(body["errors"])[:200])
         if body.get("data") is None:
-            # Uden data og uden fejl: med token betyder det næsten altid et afvist token.
+            # No data and no errors: with a token this almost always means the token was rejected.
             if self.access_token and op != "Authenticate":
                 raise FamlyAuthError("empty response")
             raise FamlyApiError("empty response")
         return body["data"]
 
     async def async_authenticate(self, email: str, password: str) -> str:
-        """Log ind og returnér access-token."""
+        """Sign in and return the access token."""
         data = await self._post(
             "Authenticate", AUTH_QUERY,
             {"email": email, "password": password, "deviceId": self.device_id, "legacy": False},
@@ -143,7 +143,7 @@ class FamlyApi:
 
     @staticmethod
     def children_from_context(me: dict[str, Any]) -> dict[str, dict[str, Any]]:
-        """Saml børn fra alle kontekster, dedupliceret på barne-id."""
+        """Collect children from all contexts, de-duplicated by child id."""
         out: dict[str, dict[str, Any]] = {}
         ctxs = [me.get("currentContext"), *(me.get("availableContexts") or [])]
         for ctx in ctxs:
@@ -153,14 +153,14 @@ class FamlyApi:
         return out
 
     async def async_get_calendar(self, child_id: str, start: date, end: date) -> list[dict[str, Any]]:
-        """Hent kalender (check-in/ud, afhentning, fri, arrangementer) for et barn."""
+        """Fetch a child's calendar (check-in/out, pickup, leave, events)."""
         url = f"https://app.famly.co/api/v2/calendar?type=RANGE&day={start}&to={end}&childId={child_id}"
         h = self._headers("/account/childProfile/:childId/activity")
         h["content-type"] = "application/json"
         try:
             async with self.session.get(url, headers=h, timeout=aiohttp.ClientTimeout(total=30)) as resp:
                 if resp.status in (401, 403):
-                    raise FamlyAuthError("token afvist")
+                    raise FamlyAuthError("token rejected")
                 if resp.status != 200:
                     raise FamlyApiError(f"HTTP {resp.status}")
                 body = await resp.json()
@@ -183,7 +183,7 @@ def _dt(value: str | None) -> datetime | None:
 
 
 def parse_calendar(body: Any) -> list[dict[str, Any]]:
-    """Fladt, tidssorteret event-liste. kind: check_in | check_out | pickup | leave | event."""
+    """Flat, time-sorted event list. kind: check_in | check_out | pickup | leave | event."""
     out: list[dict[str, Any]] = []
     periods = body if isinstance(body, list) else [body]
     for period in periods:
@@ -244,7 +244,7 @@ def _address_queries(inst: dict[str, Any]) -> list[str]:
 
 
 async def _geocode(session: aiohttp.ClientSession, inst: dict[str, Any]) -> tuple[float, float] | None:
-    """Adresse -> (lat, lon) via OpenStreetMap Nominatim. Kaldes kun én gang pr. institution."""
+    """Address -> (lat, lon) via OpenStreetMap Nominatim. Called once per institution."""
     for q in _address_queries(inst):
         try:
             async with session.get(
