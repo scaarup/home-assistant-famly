@@ -1,0 +1,15 @@
+{
+  "domain": "famly",
+  "name": "Famly",
+  "codeowners": [
+    "@scaarup"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/scaarup/home-assistant-famly",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/scaarup/home-assistant-famly/issues",
+  "requirements": [],
+  "single_config_entry": true,
+  "version": "0.1.0"
+}

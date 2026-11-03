@@ -1,0 +1,70 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Famly",
+        "description": "Log ind med din Famly-konto. Adgangskoden gemmes ikke, kun et access-token.",
+        "data": {
+          "email": "E-mail",
+          "password": "Adgangskode"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Log ind igen",
+        "description": "Famly afviste tokenet. Log ind igen.",
+        "data": {
+          "password": "Adgangskode"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Forkert e-mail eller adgangskode.",
+      "cannot_connect": "Kunne ikke nå Famly.",
+      "challenge_unsupported": "Famly kræver et ekstra login-trin (fx 2FA), som ikke er understøttet endnu."
+    },
+    "abort": {
+      "already_configured": "Kontoen er allerede sat op.",
+      "reauth_successful": "Login fornyet."
+    }
+  },
+  "entity": {
+    "image": {
+      "profile_image": {
+        "name": "Profilbillede"
+      }
+    },
+    "sensor": {
+      "birthday": {
+        "name": "Fødselsdag"
+      },
+      "check_in": {
+        "name": "Check-ind"
+      },
+      "check_out": {
+        "name": "Check-ud"
+      },
+      "pickup": {
+        "name": "Hentes af"
+      },
+      "status": {
+        "name": "Status",
+        "state": {
+          "not_arrived": "Ikke mødt",
+          "checked_in": "Checket ind",
+          "checked_out": "Checket ud",
+          "on_leave": "Fri"
+        }
+      }
+    },
+    "calendar": {
+      "calendar": {
+        "name": "Kalender"
+      }
+    },
+    "device_tracker": {
+      "location": {
+        "name": "Placering"
+      }
+    }
+  }
+}
