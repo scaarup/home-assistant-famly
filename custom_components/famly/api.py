@@ -105,7 +105,7 @@ class FamlyApi:
                 if resp.status != 200:
                     raise FamlyApiError(f"HTTP {resp.status}")
                 body = await resp.json()
-        except aiohttp.ClientError as err:
+        except (aiohttp.ClientError, TimeoutError) as err:
             raise FamlyApiError(str(err)) from err
         if body.get("errors"):
             if is_auth_error(body["errors"]):
@@ -164,7 +164,7 @@ class FamlyApi:
                 if resp.status != 200:
                     raise FamlyApiError(f"HTTP {resp.status}")
                 body = await resp.json()
-        except aiohttp.ClientError as err:
+        except (aiohttp.ClientError, TimeoutError) as err:
             raise FamlyApiError(str(err)) from err
         return parse_calendar(body)
 
@@ -257,6 +257,6 @@ async def _geocode(session: aiohttp.ClientSession, inst: dict[str, Any]) -> tupl
                     res = await resp.json()
                     if res:
                         return float(res[0]["lat"]), float(res[0]["lon"])
-        except (aiohttp.ClientError, ValueError, KeyError):
+        except (aiohttp.ClientError, TimeoutError, ValueError, KeyError):
             continue
     return None
