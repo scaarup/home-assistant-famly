@@ -1,0 +1,22 @@
+name: Release drafter
+
+# Keeps a draft release up to date with every merged pull request. Publishing the draft in the
+# GitHub UI creates the tag and triggers the "Release assets" workflow.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  update-draft:
+    name: Update draft release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: release-drafter/release-drafter@v7
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
