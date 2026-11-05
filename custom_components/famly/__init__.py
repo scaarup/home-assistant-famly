@@ -1,4 +1,4 @@
-"""Famly: børn og profilbilleder fra Famly-appens API (efterligner browseren)."""
+"""Famly: children and profile pictures from the Famly app API (mimics the browser)."""
 from __future__ import annotations
 
 import logging
@@ -28,7 +28,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class FamlyCoordinator(DataUpdateCoordinator[dict[str, dict[str, Any]]]):
-    """Data: {barne-id: child-dict}."""
+    """Data: {child id: child dict}."""
 
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry, api: FamlyApi) -> None:
         super().__init__(
@@ -64,7 +64,7 @@ class FamlyCoordinator(DataUpdateCoordinator[dict[str, dict[str, Any]]]):
                 except FamlyAuthError as err:
                     raise ConfigEntryAuthFailed(str(err)) from err
                 except FamlyApiError as err:
-                    _LOGGER.warning("Institution %s kunne ikke hentes: %s", iid, err)
+                    _LOGGER.warning("Could not fetch institution %s: %s", iid, err)
             child["institution"] = self.institutions.get(iid)
         return children
 

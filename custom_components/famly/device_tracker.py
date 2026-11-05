@@ -1,4 +1,4 @@
-"""Device tracker pr. barn: institutionens position, mens barnet er checket ind."""
+"""Device tracker per child: the institution's position while the child is checked in."""
 from __future__ import annotations
 
 from typing import Any

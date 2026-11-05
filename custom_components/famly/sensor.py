@@ -1,4 +1,4 @@
-"""Sensorer pr. barn: status i dag, check-in/ud, afhentning, fødselsdag."""
+"""Sensors per child: status today, check-in/out, pickup, birthday."""
 from __future__ import annotations
 
 from datetime import date, datetime
@@ -32,7 +32,7 @@ class _Today(FamlyChildEntity, SensorEntity):
 
 
 class FamlyStatus(_Today):
-    """Barnets hovedentitet: navnet er barnets eget, tilstanden er dagens status."""
+    """The child's main entity: named after the child, the state is today's status."""
 
     _attr_name = None
     _attr_translation_key = "status"

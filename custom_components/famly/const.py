@@ -1,4 +1,4 @@
-"""Konstanter for Famly."""
+"""Constants for Famly."""
 
 DOMAIN = "famly"
 CONF_EMAIL = "email"

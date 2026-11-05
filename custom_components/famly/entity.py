@@ -1,4 +1,4 @@
-"""Fælles basis: én HA-enhed pr. barn."""
+"""Shared base: one HA device per child."""
 from __future__ import annotations
 
 from typing import Any

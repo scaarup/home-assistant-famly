@@ -1,4 +1,4 @@
-"""Kalender pr. barn: arrangementer og fridage."""
+"""Calendar per child: check-in/out, pickups, days off and events."""
 from __future__ import annotations
 
 import re
@@ -30,7 +30,7 @@ class FamlyCalendar(FamlyChildEntity, CalendarEntity):
         self._attr_unique_id = f"{child_id}_calendar"
 
     def _all(self) -> list[CalendarEvent]:
-        """Check-in/ud som ét blok pr. dag, afhentning, arrangementer, fridage og lukkedage."""
+        """Check-in/out as one block per day, pickups, events, days off and closing days."""
         out: list[CalendarEvent] = []
         events = self._child.get("events", [])
         default_inst = next((e["subtitle"] for e in reversed(events) if e["kind"] == "pickup" and e["subtitle"]), None)
