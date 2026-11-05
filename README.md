@@ -2,7 +2,7 @@
 
 [![Validate](https://github.com/scaarup/home-assistant-famly/actions/workflows/validate.yml/badge.svg)](https://github.com/scaarup/home-assistant-famly/actions/workflows/validate.yml)
 [![Release](https://img.shields.io/github/v/release/scaarup/home-assistant-famly)](https://github.com/scaarup/home-assistant-famly/releases)
-[![HACS](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://hacs.xyz)
+[![HACS](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://hacs.xyz)
 [![License: MIT](https://img.shields.io/github/license/scaarup/home-assistant-famly)](LICENSE)
 
 A custom integration that brings your child's day at daycare from [Famly](https://www.famly.co)
@@ -38,16 +38,14 @@ with these entities:
 
 ### Option 1: HACS (recommended)
 
-This repository is not in the default HACS store, so you add it as a **custom repository**.
+Famly is in the default HACS store, so there is no need to add a custom repository.
 
 1. Make sure HACS is installed and set up in Home Assistant.
 2. Click this button to open the repository in HACS, then click **Download**:
 
    [![Open your Home Assistant instance and open this repository in HACS.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=scaarup&repository=home-assistant-famly&category=integration)
 
-   Or add it by hand: **HACS**, three-dot menu, **Custom repositories**, enter
-   `https://github.com/scaarup/home-assistant-famly`, choose **Integration**, click **Add**,
-   then find **Famly** in HACS and click **Download**.
+   Or search by hand: open **HACS**, search for **Famly**, open it and click **Download**.
 3. **Restart Home Assistant** (Settings > System > Restart).
 4. Continue with [Setup](#setup).
 
